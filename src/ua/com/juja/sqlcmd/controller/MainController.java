@@ -6,10 +6,20 @@ import ua.com.juja.sqlcmd.view.Console;
 import ua.com.juja.sqlcmd.view.View;
 
 public class MainController {
-    public static void main(String[] args) {
-        View view = new Console();
-        DatabaseManager manager = new JDBCDatabaseManager();
+    private View view;
+    private DatabaseManager manager;
 
+    public MainController(View view, DatabaseManager manager) {
+        this.view = new Console();
+        this.manager = new JDBCDatabaseManager();
+    }
+
+    public void run() {
+        connectToDb();
+        //
+    }
+
+    private void connectToDb() {
         view.write("HEllo user!");
         view.write("Enter the name of db, name of user and password in format: database|userName|password");
 
