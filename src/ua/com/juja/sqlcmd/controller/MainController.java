@@ -24,24 +24,31 @@ public class MainController {
         view.write("Enter the name of db, name of user and password in format: database|userName|password");
 
         while (true) {
-            String string = view.read();
-            String[] data = string.split("\\|");
-            String databaseName = data[0];
-            String userName = data[1];
-            String password = data[2];
-
             try {
+                String string = view.read();
+                String[] data = string.split("\\|");
+                if (data.length != 3) {
+                    throw new IllegalArgumentException("Wrong number of symbols. Must be 3, but is: " + data.length);
+                }
+                String databaseName = data[0];
+                String userName = data[1];
+                String password = data[2];
+
                 manager.connect(databaseName, userName, password);
                 break;
             } catch (Exception e) {
-                String message = e.getMessage();
-                if (e.getCause() != null) {
-                    message += " " + e.getCause().getMessage();
-                }
-                view.write("We have a problem, because: " + message);
-                view.write("Repeat please.");
+                printError(e);
             }
         }
         view.write("Success!");
+    }
+
+    private void printError(Exception e) {
+        String message = e.getMessage();
+        if (e.getCause() != null) {
+            message += " " + e.getCause().getMessage();
+        }
+        view.write("We have a problem, because: " + message);
+        view.write("Repeat please.");
     }
 }
