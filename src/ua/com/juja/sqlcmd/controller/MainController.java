@@ -1,5 +1,6 @@
 package ua.com.juja.sqlcmd.controller;
 
+import ua.com.juja.sqlcmd.model.DataSet;
 import ua.com.juja.sqlcmd.model.DatabaseManager;
 import ua.com.juja.sqlcmd.model.JDBCDatabaseManager;
 import ua.com.juja.sqlcmd.view.Console;
@@ -28,18 +29,62 @@ public class MainController {
             } else if (command.equals("exit")) {
                 view.write("Have a nice day!");
                 System.exit(0);
+            } else if (command.startsWith("find|")) {
+                doFind(command);
             } else {
                 view.write("Command does not exist: " + command);
             }
         }
     }
 
+    private void doFind(String command) {
+        String[] data = command.split("\\|");
+        String tableName = data[1];
+
+        DataSet[] tableData = manager.getTableData(tableName);
+        String[] tableColumns = manager.getTableColumns(tableName);
+        printHeader(tableColumns);
+        printTable(tableData);
+
+    }
+
+    private void printTable(DataSet[] tableData) {
+        for (DataSet row : tableData) {
+            printRow(row);
+        }
+    }
+
+    private void printRow(DataSet row) {
+        Object[] values = row.getValues();
+        String result = "|";
+        for (Object value : values) {
+            result += value + "|";
+        }
+        view.write(result);
+    }
+
+    private void printHeader(String[] tableColumns) {
+        String result = "|";
+        for (String name : tableColumns) {
+            result += name + "|";
+        }
+        view.write("---------------");
+        view.write(result);
+        view.write("---------------");
+    }
+
     private void doHelp() {
         view.write("List of commands: ");
+
         view.write("\tlist");
         view.write("\t\tfor getting list of all database tables, able to connect");
+
+        view.write("\tfind|tableName");
+        view.write("\t\tfor getting data of the table 'tableName'");
+
         view.write("\thelp");
         view.write("\t\tfor showing list on the screen");
+
         view.write("\texit");
         view.write("\t\tFor exit the program");
     }
