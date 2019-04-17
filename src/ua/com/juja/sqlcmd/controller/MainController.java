@@ -5,6 +5,8 @@ import ua.com.juja.sqlcmd.model.JDBCDatabaseManager;
 import ua.com.juja.sqlcmd.view.Console;
 import ua.com.juja.sqlcmd.view.View;
 
+import java.util.Arrays;
+
 public class MainController {
     private View view;
     private DatabaseManager manager;
@@ -16,7 +18,36 @@ public class MainController {
 
     public void run() {
         connectToDb();
-        //
+        while (true) {
+            view.write("Enter command (or 'help' for help)");
+            String command = view.read();
+            if (command.equals("list")) {
+                doList();
+            } else if (command.equals("help")) {
+                doHelp();
+            } else if (command.equals("exit")) {
+                view.write("Have a nice day!");
+                System.exit(0);
+            } else {
+                view.write("Command does not exist: " + command);
+            }
+        }
+    }
+
+    private void doHelp() {
+        view.write("List of commands: ");
+        view.write("\tlist");
+        view.write("\t\tfor getting list of all database tables, able to connect");
+        view.write("\thelp");
+        view.write("\t\tfor showing list on the screen");
+        view.write("\texit");
+        view.write("\t\tFor exit the program");
+    }
+
+    private void doList() {
+        String[] tableNames = manager.getTableNames();
+        String message = Arrays.toString(tableNames);
+        view.write(message);
     }
 
     private void connectToDb() {
