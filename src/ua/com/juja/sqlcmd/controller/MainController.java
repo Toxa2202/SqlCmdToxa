@@ -1,7 +1,6 @@
 package ua.com.juja.sqlcmd.controller;
 
 import ua.com.juja.sqlcmd.controller.command.*;
-import ua.com.juja.sqlcmd.model.DataSet;
 import ua.com.juja.sqlcmd.model.DatabaseManager;
 import ua.com.juja.sqlcmd.view.Console;
 import ua.com.juja.sqlcmd.view.View;
@@ -15,25 +14,21 @@ public class MainController {
         this.view = new Console();
         this.manager = manager;
         this.commands = new Command[] { new Exit(view), new Help(view),
-                new List(manager, view), new Find(manager, view) };
+                new List(manager, view), new Find(manager, view),
+                new Unsupported(view) };
     }
 
     public void run() {
         connectToDb();
         while (true) {
             view.write("Enter command (or 'help' for help)");
-            String command = view.read();
+            String input = view.read();
 
-            if (commands[2].canProcess(command)) {
-                commands[2].process(command);
-            } else if (commands[1].canProcess(command)) {
-                commands[1].process(command);
-            } else if (commands[0].canProcess(command)) {
-                commands[0].process(command);
-            } else if (commands[3].canProcess(command)) {
-                commands[3].process(command);
-            } else {
-                view.write("Command does not exist: " + command);
+            for (Command command : commands) {
+                if (command.canProcess(input)) {
+                    command.process(input);
+                    break;
+                }
             }
         }
     }
@@ -64,8 +59,9 @@ public class MainController {
 
     private void printError(Exception e) {
         String message = e.getMessage();
-        if (e.getCause() != null) {
-            message += " " + e.getCause().getMessage();
+        Throwable cause = e.getCause();
+        if (cause != null) {
+            message += " " + cause.getMessage();
         }
         view.write("We have a problem, because: " + message);
         view.write("Repeat please.");
