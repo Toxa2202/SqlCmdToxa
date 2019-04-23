@@ -2,9 +2,9 @@ package ua.com.juja.sqlcmd.controller;
 
 import ua.com.juja.sqlcmd.controller.command.Command;
 import ua.com.juja.sqlcmd.controller.command.Exit;
+import ua.com.juja.sqlcmd.controller.command.Help;
 import ua.com.juja.sqlcmd.model.DataSet;
 import ua.com.juja.sqlcmd.model.DatabaseManager;
-import ua.com.juja.sqlcmd.model.JDBCDatabaseManager;
 import ua.com.juja.sqlcmd.view.Console;
 import ua.com.juja.sqlcmd.view.View;
 
@@ -18,7 +18,7 @@ public class MainController {
     public MainController(View view, DatabaseManager manager) {
         this.view = new Console();
         this.manager = manager;
-        this.commands = new Command[] { new Exit(view) };
+        this.commands = new Command[] { new Exit(view), new Help(view) };
     }
 
     public void run() {
@@ -28,8 +28,8 @@ public class MainController {
             String command = view.read();
             if (command.equals("list")) {
                 doList();
-            } else if (command.equals("help")) {
-                doHelp();
+            } else if (commands[1].canProcess(command)) {
+                commands[1].process(command);
             } else if (commands[0].canProcess(command)) {
                 commands[0].process(command);
             } else if (command.startsWith("find|")) {
@@ -74,22 +74,6 @@ public class MainController {
         view.write("---------------");
         view.write(result);
         view.write("---------------");
-    }
-
-    private void doHelp() {
-        view.write("List of commands: ");
-
-        view.write("\tlist");
-        view.write("\t\tfor getting list of all database tables, able to connect");
-
-        view.write("\tfind|tableName");
-        view.write("\t\tfor getting data of the table 'tableName'");
-
-        view.write("\thelp");
-        view.write("\t\tfor showing list on the screen");
-
-        view.write("\texit");
-        view.write("\t\tFor exit the program");
     }
 
     private void doList() {
