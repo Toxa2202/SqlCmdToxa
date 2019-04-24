@@ -19,6 +19,10 @@ public class Help implements Command{
     public void process(String command) {
         view.write("List of commands: ");
 
+        view.write("\tconnect|databaseName|userName|password");
+        view.write("\t\tfor connecting to database, to work for");
+
+
         view.write("\tlist");
         view.write("\t\tfor getting list of all database tables, able to connect");
 
