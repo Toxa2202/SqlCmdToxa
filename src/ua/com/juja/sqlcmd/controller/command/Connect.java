@@ -4,6 +4,7 @@ import ua.com.juja.sqlcmd.model.DatabaseManager;
 import ua.com.juja.sqlcmd.view.View;
 
 public class Connect implements Command {
+    private static String COMMAND_SAMPLE = "connect|sqlcmd|postgres|postgres";
     private DatabaseManager manager;
     private View view;
 
@@ -21,9 +22,11 @@ public class Connect implements Command {
     public void process(String command) {
         try {
             String[] data = command.split("\\|");
-            if (data.length != 4) {
-                throw new IllegalArgumentException("Wrong number of symbols. " +
-                        "Must be 4, but is: " + data.length);
+            if (data.length != count()) { // TODO 4 - magic
+                throw new IllegalArgumentException(
+                        String.format("Wrong number of symbols. " +
+                        "Must be %s, but is: %s",
+                                count(), data.length));
             }
             String databaseName = data[1];
             String userName = data[2];
@@ -34,6 +37,10 @@ public class Connect implements Command {
         } catch (Exception e) {
             printError(e);
         }
+    }
+
+    private int count() {
+        return COMMAND_SAMPLE.split("\\|").length;
     }
 
     private void printError(Exception e) {
