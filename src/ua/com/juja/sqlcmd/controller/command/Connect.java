@@ -22,7 +22,7 @@ public class Connect implements Command {
     public void process(String command) {
         try {
             String[] data = command.split("\\|");
-            if (data.length != count()) { // TODO 4 - magic
+            if (data.length != count()) {
                 throw new IllegalArgumentException(
                         String.format("Wrong number of symbols. " +
                         "Must be %s, but is: %s",

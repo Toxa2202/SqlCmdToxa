@@ -17,6 +17,6 @@ public class Exit implements Command{
     @Override
     public void process(String command) {
         view.write("Have a nice day!");
-        System.exit(0);
+        throw new ExitException();
     }
 }

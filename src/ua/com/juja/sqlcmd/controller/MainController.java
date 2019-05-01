@@ -22,6 +22,16 @@ public class MainController {
     }
 
     public void run() {
+
+        try {
+            doWork();
+            return;
+        } catch (ExitException e) {
+            // do nothing
+        }
+    }
+
+    private void doWork() {
         view.write("Hello user!");
         view.write("Enter the name of db, name of user and password in format: \n\tconnect|databaseName|userName|password");
 

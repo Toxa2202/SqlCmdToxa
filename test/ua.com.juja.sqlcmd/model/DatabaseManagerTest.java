@@ -1,3 +1,5 @@
+package ua.com.juja.sqlcmd.model;
+
 import org.junit.Before;
 import org.junit.Test;
 import ua.com.juja.sqlcmd.model.DataSet;
