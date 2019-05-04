@@ -13,7 +13,7 @@ public class ConfigurableInputStream extends InputStream {
             return -1;
         }
 
-        if (endLine == true) {
+        if (endLine) {
             endLine = false;
             return -1;
         }

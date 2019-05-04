@@ -46,11 +46,11 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public String[] getTableNames(){
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='public'");
+            ResultSet rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'");
             String[] tables = new String[100];
             int index = 0;
             while (rs.next()) {
-                tables[index++] = rs.getString("TABLE_NAME");
+                tables[index++] = rs.getString("table_name");
             }
             tables = Arrays.copyOf(tables, index, String[].class);
             rs.close();
@@ -99,10 +99,10 @@ public class JDBCDatabaseManager implements DatabaseManager {
         try {
             Statement stmt = connection.createStatement();
 
-            String tableNames = getNamesFormatted(input, "%s,");
-            String values = getValuesFormatted(input, "'%s',");
+            String tableNames = getNameFormated(input, "%s,");
+            String values = getValuesFormated(input, "'%s',");
 
-            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ") " +
+            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
         } catch (SQLException e) {
@@ -110,7 +110,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
-    private String getValuesFormatted(DataSet input, String format) {
+    private String getValuesFormated(DataSet input, String format) {
         String values = "";
         for (Object value : input.getValues()) {
             values += String.format(format, value);
@@ -122,10 +122,11 @@ public class JDBCDatabaseManager implements DatabaseManager {
     @Override
     public void update(String tableName, int id, DataSet newValue) {
         try {
-            String tableNames = getNamesFormatted(newValue, "%s = ?,");
+            String tableNames = getNameFormated(newValue, "%s = ?,");
 
-            PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE public." + tableName + " SET " + tableNames + " WHERE id = ?");
+            String sql = "UPDATE public." + tableName + " SET " + tableNames + " WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
             int index = 1;
             for (Object value : newValue.getValues()) {
                 ps.setObject(index, value);
@@ -144,7 +145,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public String[] getTableColumns(String tableName) {
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='public' AND table_name = '" + tableName + "'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '" + tableName + "'");
             String[] tables = new String[100];
             int index = 0;
             while (rs.next()) {
@@ -165,7 +166,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return connection != null;
     }
 
-    private String getNamesFormatted(DataSet newValue, String format) {
+    private String getNameFormated(DataSet newValue, String format) {
         String string = "";
         for (String name : newValue.getNames()) {
             string += String.format(format, name);

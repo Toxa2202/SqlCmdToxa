@@ -70,7 +70,7 @@ public class DataSet {
 
     @Override
     public String toString() {
-        return "{\n" +
+        return "{" +
                 "names:" + Arrays.toString(getNames()) + ", " +
                 "values:" + Arrays.toString(getValues()) +
                 "}";

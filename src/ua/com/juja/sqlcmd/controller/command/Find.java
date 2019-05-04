@@ -23,9 +23,10 @@ public class Find implements Command {
         String[] data = command.split("\\|");
         String tableName = data[1];
 
-        DataSet[] tableData = manager.getTableData(tableName);
         String[] tableColumns = manager.getTableColumns(tableName);
         printHeader(tableColumns);
+
+        DataSet[] tableData = manager.getTableData(tableName);
         printTable(tableData);
     }
 
@@ -33,6 +34,7 @@ public class Find implements Command {
         for (DataSet row : tableData) {
             printRow(row);
         }
+        view.write("---------------");
     }
 
     private void printRow(DataSet row) {

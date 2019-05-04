@@ -20,7 +20,7 @@ public class IsConnected implements Command {
     @Override
     public void process(String command) {
         view.write(String.format("You can't use this command '%s' " +
-                "until use command " +
+                "until connect with command " +
                 "\n\tconnect|databaseName|userName|password", command));
     }
 }

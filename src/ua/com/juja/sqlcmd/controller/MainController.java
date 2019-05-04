@@ -20,14 +20,13 @@ public class MainController {
                 new Clear(manager, view),
                 new Create(manager, view),
                 new Find(manager, view),
-                new Unsupported(view) };
+                new Unsupported(view)
+        };
     }
 
     public void run() {
-
         try {
             doWork();
-            return;
         } catch (ExitException e) {
             // do nothing
         }
@@ -35,21 +34,36 @@ public class MainController {
 
     private void doWork() {
         view.write("Hello user!");
-        view.write("Enter the name of db, name of user and password in format: \n\tconnect|databaseName|userName|password");
+        view.write("Enter the name of db, name of user and password in format: " +
+                "\n\tconnect|databaseName|userName|password");
 
         while (true) {
             String input = view.read();
-            if (input == null) {
-                new Exit(view).process(input);
-            }
-
             for (Command command : commands) {
-                if (command.canProcess(input)) {
-                    command.process(input);
+                try {
+                    if (command.canProcess(input)) {
+                        command.process(input);
+                        break;
+                    }
+                } catch (Exception e) {
+                    if (e instanceof ExitException) {
+                        throw e;
+                    }
+                    printError(e);
                     break;
                 }
             }
-            view.write("Enter command (or 'help' for help)");
+            view.write("Enter command (or 'help' for help):");
         }
+    }
+
+    private void printError(Exception e) {
+        String message = e.getMessage();
+        Throwable cause = e.getCause();
+        if (cause != null) {
+            message += " " + cause.getMessage();
+        }
+        view.write("Error! Because: " + message);
+        view.write("Repeat, please.");
     }
 }

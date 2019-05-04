@@ -20,8 +20,8 @@ public class Main {
         ResultSet rs = stmt.executeQuery("SELECT * FROM public.user WHERE id > 10");
         while (rs.next()) {
             System.out.println("id:" + rs.getString("id"));
-            System.out.println("name: " + rs.getString("name"));
-            System.out.println("password: " + rs.getString("password"));
+            System.out.println("name:" + rs.getString("name"));
+            System.out.println("password:" + rs.getString("password"));
             System.out.println("-------");
         }
         rs.close();
@@ -29,9 +29,9 @@ public class Main {
 
         // TABLE NAMES
         stmt = connection.createStatement();
-        rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='public'");
+        rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'");
         while (rs.next()) {
-            System.out.println(rs.getString("TABLE_NAME"));
+            System.out.println(rs.getString("table_name"));
         }
         rs.close();
         stmt.close();
@@ -39,13 +39,14 @@ public class Main {
         // DELETE
         stmt = connection.createStatement();
         stmt.executeUpdate("DELETE FROM public.user " +
-                "WHERE id > 50 AND id < 100");
+                "WHERE id > 10 AND id < 100");
         stmt.close();
 
         // UPDATE
         PreparedStatement ps = connection.prepareStatement(
                 "UPDATE public.user SET password = ? WHERE id > 3");
-        ps.setString(1, "password_" + new Random().nextInt());
+        String pass = "password_" + new Random().nextInt();
+        ps.setString(1, pass);
         ps.executeUpdate();
         ps.close();
 
