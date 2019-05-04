@@ -22,9 +22,14 @@ public class Help implements Command{
         view.write("\tconnect|databaseName|userName|password");
         view.write("\t\tfor connecting to database, to work for");
 
-
         view.write("\tlist");
         view.write("\t\tfor getting list of all database tables, able to connect");
+
+        view.write("\tclear|tableName");
+        view.write("\t\tfor clearing whole table"); //todo if it was an accident, ask again
+
+        view.write("\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN");
+        view.write("\t\tfor creating notation in the table");
 
         view.write("\tfind|tableName");
         view.write("\t\tfor getting data of the table 'tableName'");
