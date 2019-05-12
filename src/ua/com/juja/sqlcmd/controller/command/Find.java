@@ -21,7 +21,7 @@ public class Find implements Command {
     @Override
     public void process(String command) {
         String[] data = command.split("\\|");
-        String tableName = data[1];
+        String tableName = data[1]; // todo to add validation
 
         String[] tableColumns = manager.getTableColumns(tableName);
         printHeader(tableColumns);
