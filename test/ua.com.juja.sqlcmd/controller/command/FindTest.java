@@ -3,6 +3,8 @@ package ua.com.juja.sqlcmd.controller.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import ua.com.juja.sqlcmd.model.DataSet;
 import ua.com.juja.sqlcmd.model.DatabaseManager;
@@ -51,6 +53,65 @@ public class FindTest {
                 "---------------, " +
                 "|12|Stiven|*****|, " +
                 "|13|Eva|+++++|, " +
+                "---------------]", captor.getAllValues().toString());
+    }
+
+    @Test
+    public void testCanProcessFindWithParametersString() {
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("find|user");
+
+        // then
+        assertTrue(canProcess);
+    }
+
+    @Test
+    public void testCantProcessFindWithoutParametersString() {
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("user");
+
+        // then
+        assertFalse(canProcess);
+    }
+
+    @Test
+    public void testCantProcessQweString() {
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("qwe|user");
+
+        // then
+        assertFalse(canProcess);
+    }
+
+    @Test
+    public void testPrintEmptyTableData() {
+        // given
+        Command command = new Find(manager, view);
+        when(manager.getTableColumns("user"))
+                .thenReturn(new String[] {"id", "name", "password"});
+
+        DataSet[] data = new DataSet[0];
+        when(manager.getTableData("user"))
+                .thenReturn(data);
+
+        // when
+        command.process("find|user");
+
+        // then
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(view, atLeastOnce()).write(captor.capture());
+        assertEquals("[---------------, " +
+                "|id|name|password|, " +
+                "---------------, " +
                 "---------------]", captor.getAllValues().toString());
     }
 }
