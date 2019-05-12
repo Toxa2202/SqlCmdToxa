@@ -8,8 +8,7 @@ import ua.com.juja.sqlcmd.model.DatabaseManager;
 import ua.com.juja.sqlcmd.view.View;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ClearTest {
@@ -62,5 +61,31 @@ public class ClearTest {
 
         // then
         assertFalse(canProcess);
+    }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsLessThen2() {
+        // when
+        try {
+            command.process("clear");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("Format of command " +
+                    "'clear|tableName', but you write: clear", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsMoreThen2() {
+        // when
+        try {
+            command.process("clear|table|qwe");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("Format of command " +
+                    "'clear|tableName', but you write: clear|table|qwe", e.getMessage());
+        }
     }
 }

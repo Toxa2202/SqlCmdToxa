@@ -22,7 +22,7 @@ public class Clear implements Command {
         String[] data = command.split("\\|");
         if (data.length != 2) {
             throw new IllegalArgumentException("Format of command " +
-                    "'clear|tableName', but you write " + command);
+                    "'clear|tableName', but you write: " + command);
         }
         manager.clear(data[1]);
 
